@@ -88,23 +88,6 @@ suite(`CodeLensProvider options: ${testAssetWorkspace.description}`, function() 
         await testAssetWorkspace.cleanupWorkspace();
     });
 
-    /* Skip this test until we are able to understand the cause of flakiness */
-    test.skip("Returns no references code lenses when 'csharp.referencesCodeLens.enabled' option is set to false", async function () {
-        let csharpConfig = vscode.workspace.getConfiguration('csharp');
-        await csharpConfig.update('referencesCodeLens.enabled', false);
-        await csharpConfig.update('testsCodeLens.enabled', true);
-
-        let codeLenses = await GetCodeLenses(fileUri, 100);
-        expect(codeLenses.length).to.equal(4);
-
-        for (let codeLens of codeLenses) {
-            expect(codeLens.isResolved).to.be.true;
-            expect(codeLens.command).not.to.be.undefined;
-            expect(codeLens.command.command).to.be.oneOf(['dotnet.test.run', 'dotnet.classTests.run', 'dotnet.test.debug', 'dotnet.classTests.debug']);
-            expect(codeLens.command.title).to.be.oneOf(['Run Test', 'Run All Tests', 'Debug Test', 'Debug All Tests']);
-        }
-    });
-
     test("Returns no test code lenses when 'csharp.testsCodeLens.enabled' option is set to false", async function () {
         let csharpConfig = vscode.workspace.getConfiguration('csharp');
         await csharpConfig.update('referencesCodeLens.enabled', true);
